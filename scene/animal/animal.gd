@@ -9,17 +9,19 @@ const DRAG_LIM_MIN: Vector2 = Vector2(-60,0)
 const IMPULSE_MULT: float = 20.0
 const IMPULSE_MAX: float = 1200.0
 
+
 var _start: Vector2 = Vector2.ZERO
 var _drag_start: Vector2 = Vector2.ZERO
 var _dragged_vector: Vector2 = Vector2.ZERO
 var _last_dragged_vector: Vector2 = Vector2.ZERO
 var _arrow_scale_x: float = 0.0
-
+var _last_collision_count: int = 0
 
 @onready var label: Label = $Label #debut purpose only
 @onready var stretch_sound: AudioStreamPlayer2D = $StretchSound
 @onready var arrow: Sprite2D = $Arrow
 @onready var launch_sound: AudioStreamPlayer2D = $LaunchSound
+@onready var kick_sound: AudioStreamPlayer2D = $KickSound
 
 
 var _state: ANIMAL_STATE = ANIMAL_STATE.READY
@@ -101,6 +103,17 @@ func drag_in_limits() -> void:
 	)
 	position = _start + _dragged_vector
 
+
+func play_collision() -> void:
+	if _last_collision_count == 0 and get_contact_count() > 0 and kick_sound.playing == false:
+		kick_sound.play()
+	_last_collision_count = get_contact_count()
+	
+
+func update_flight() -> void:
+	play_collision()
+
+
 #updates position according to mouse position
 func update_drag() -> void:
 	if detect_release() == true:
@@ -117,6 +130,9 @@ func update(delta:float) -> void:
 	match _state:
 		ANIMAL_STATE.DRAG:
 			update_drag()
+		ANIMAL_STATE.RELEASE:
+			update_flight()
+
 
 
 
@@ -133,3 +149,11 @@ func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if _state == ANIMAL_STATE.READY and event.is_action_pressed("drag"):
 		set_new_state(ANIMAL_STATE.DRAG)
+
+
+func _on_sleeping_state_changed() -> void:
+	if sleeping == true:
+		var cb = get_colliding_bodies()
+		if cb.size() > 0:
+			cb[0].die()
+		call_deferred("die")
