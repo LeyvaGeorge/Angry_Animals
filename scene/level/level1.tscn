@@ -6,5 +6,5 @@
 [node name="Level" instance=ExtResource("1_hlais")]
 
 [node name="Cup" parent="." index="3" instance=ExtResource("2_vd83h")]
-position = Vector2(574, 353)
+position = Vector2(328, 565)
 scale = Vector2(1.2, 1)

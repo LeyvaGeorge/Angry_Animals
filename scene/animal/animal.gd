@@ -69,6 +69,7 @@ func detect_release() -> bool:
 	if _state == ANIMAL_STATE.DRAG:
 		if Input.is_action_just_released("drag") == true:
 			set_new_state(ANIMAL_STATE.RELEASE)
+			SignalManager.on_attempt_made.emit()
 			return true
 	return false
 
@@ -132,6 +133,7 @@ func update(delta:float) -> void:
 			update_drag()
 		ANIMAL_STATE.RELEASE:
 			update_flight()
+			
 
 
 
