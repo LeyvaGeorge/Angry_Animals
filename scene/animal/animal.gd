@@ -127,7 +127,7 @@ func update_drag() -> void:
 	scale_arrow()
 
 #Updates the state of the animal
-func update(delta:float) -> void:
+func update(_delta:float) -> void:
 	match _state:
 		ANIMAL_STATE.DRAG:
 			update_drag()
@@ -148,7 +148,7 @@ func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	die() 
 
 #Detect mouse events
-func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+func _on_input_event(_viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if _state == ANIMAL_STATE.READY and event.is_action_pressed("drag"):
 		set_new_state(ANIMAL_STATE.DRAG)
 
